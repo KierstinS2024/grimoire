@@ -46,6 +46,10 @@ export default function ChapterView() {
     }
   };
 
+  const handleEntryDeleted = (deletedId) => {
+    setEntries((prev) => prev.filter((e) => e._id !== deletedId));
+  };
+
   if (loading) return (
     <div className="page">
       <Navbar />
@@ -58,7 +62,9 @@ export default function ChapterView() {
       <Navbar />
       <main className="chapter-view">
         <div className="chapter-view-header">
-          <button className="btn-back" onClick={() => navigate('/dashboard')}>← Back</button>
+          <button className="btn-back" onClick={() => navigate("/dashboard")}>
+            ← Back
+          </button>
           <div className="chapter-view-title">
             <span>{chapter.icon}</span>
             <h2 style={{ color: chapter.color }}>{chapter.name}</h2>
@@ -77,7 +83,11 @@ export default function ChapterView() {
             />
           </div>
         ) : (
-          <button className="btn-primary" onClick={() => setShowForm(true)}>
+          <button
+            className="btn-primary"
+            onClick={() => setShowForm(true)}
+            style={{ marginBottom: "1.5rem" }}
+          >
             + New Entry
           </button>
         )}
@@ -89,8 +99,12 @@ export default function ChapterView() {
           </div>
         ) : (
           <div className="entry-list">
-            {entries.map(entry => (
-              <EntryCard key={entry._id} entry={entry} />
+            {entries.map((entry) => (
+              <EntryCard
+                key={entry._id}
+                entry={entry}
+                onDeleted={handleEntryDeleted}
+              />
             ))}
           </div>
         )}

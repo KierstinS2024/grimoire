@@ -635,3 +635,26 @@ body {
   font-size: 0.8rem;
   margin-top: 0.5rem;
 }
+
+/* Delete button */
+.btn-delete {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.25rem;
+  transition: color 0.2s;
+  border-radius: var(--radius-sm);
+}
+
+.btn-delete:hover {
+  color: #f87171;
+}
+
+.chapter-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

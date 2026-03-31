@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import api from "../api/axios";
-import Navbar from "../components/Navbar";
-import ChapterCard from "../components/ChapterCard";
-import CreateChapterModal from "../components/CreateChapterModal";
+import { useState, useEffect } from 'react';
+import api from '../api/axios';
+import Navbar from '../components/Navbar';
+import ChapterCard from '../components/ChapterCard';
+import CreateChapterModal from '../components/CreateChapterModal';
 
 export default function Dashboard() {
   const [chapters, setChapters] = useState([]);
@@ -12,10 +12,10 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchChapters = async () => {
       try {
-        const res = await api.get("/chapters");
+        const res = await api.get('/chapters');
         setChapters(res.data);
       } catch (err) {
-        console.error("Failed to fetch chapters", err);
+        console.error('Failed to fetch chapters', err);
       } finally {
         setLoading(false);
       }
@@ -24,7 +24,11 @@ export default function Dashboard() {
   }, []);
 
   const handleChapterCreated = (newChapter) => {
-    setChapters((prev) => [newChapter, ...prev]);
+    setChapters(prev => [newChapter, ...prev]);
+  };
+
+  const handleChapterDeleted = (deletedId) => {
+    setChapters(prev => prev.filter(c => c._id !== deletedId));
   };
 
   return (
@@ -46,8 +50,12 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="chapter-grid">
-            {chapters.map((chapter) => (
-              <ChapterCard key={chapter._id} chapter={chapter} />
+            {chapters.map(chapter => (
+              <ChapterCard
+                key={chapter._id}
+                chapter={chapter}
+                onDeleted={handleChapterDeleted}
+              />
             ))}
           </div>
         )}

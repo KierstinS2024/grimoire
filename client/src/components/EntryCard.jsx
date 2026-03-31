@@ -1,11 +1,13 @@
+import api from '../api/axios';
+
 const STATUS_COLORS = {
-  active:      '#a78bfa',
-  completed:   '#34d399',
-  paused:      '#f59e0b',
-  blocked:     '#f87171',
+  active:        '#a78bfa',
+  completed:     '#34d399',
+  paused:        '#f59e0b',
+  blocked:       '#f87171',
   'in-progress': '#60a5fa',
-  want:        '#a89f8f',
-  dropped:     '#6b6358',
+  want:          '#a89f8f',
+  dropped:       '#6b6358',
 };
 
 const MOOD_ICONS = {
@@ -17,7 +19,18 @@ const MOOD_ICONS = {
   heavy:      '🪨',
 };
 
-export default function EntryCard({ entry }) {
+export default function EntryCard({ entry, onDeleted }) {
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+    if (!window.confirm(`Delete "${entry.title}"?`)) return;
+    try {
+      await api.delete(`/chapters/${entry.chapterId}/entries/${entry._id}`);
+      onDeleted(entry._id);
+    } catch (err) {
+      console.error('Failed to delete entry', err);
+    }
+  };
+
   return (
     <div className="entry-card">
       <div className="entry-card-header">
@@ -44,6 +57,7 @@ export default function EntryCard({ entry }) {
               {'★'.repeat(entry.fields.rating)}{'☆'.repeat(5 - entry.fields.rating)}
             </span>
           )}
+          <button className="btn-delete" onClick={handleDelete}>✕</button>
         </div>
       </div>
 
