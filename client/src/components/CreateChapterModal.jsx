@@ -10,6 +10,38 @@ const CHAPTER_COLORS = [
   "#60a5fa",
   "#f472b6",
 ];
+const EMOJI_OPTIONS = [
+  "📖",
+  "📝",
+  "✅",
+  "🎯",
+  "💼",
+  "📚",
+  "🌿",
+  "🏋️",
+  "🍳",
+  "✈️",
+  "🎮",
+  "🎵",
+  "🎨",
+  "💡",
+  "🌙",
+  "⚡",
+  "🔥",
+  "🌊",
+  "🧠",
+  "💰",
+  "🏠",
+  "🌱",
+  "📷",
+  "🎬",
+  "🧘",
+  "🐾",
+  "❤️",
+  "⭐",
+  "🔮",
+  "🗺️",
+];
 
 export default function CreateChapterModal({ onClose, onCreated }) {
   const [formData, setFormData] = useState({
@@ -68,9 +100,22 @@ export default function CreateChapterModal({ onClose, onCreated }) {
               />
             ))}
           </div>
+          <p className="emoji-label">Icon</p>
+          <div className="emoji-picker">
+            {EMOJI_OPTIONS.map((emoji) => (
+              <button
+                key={emoji}
+                type="button"
+                className={`emoji-option ${formData.icon === emoji ? "selected" : ""}`}
+                onClick={() => setFormData((p) => ({ ...p, icon: emoji }))}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
           <input
-            placeholder="Icon (emoji)"
-            value={formData.icon}
+            placeholder="Or type your own emoji"
+            value={EMOJI_OPTIONS.includes(formData.icon) ? "" : formData.icon}
             onChange={(e) =>
               setFormData((p) => ({ ...p, icon: e.target.value }))
             }

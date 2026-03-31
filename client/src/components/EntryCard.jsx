@@ -37,8 +37,10 @@ export default function EntryCard({ entry, onDeleted }) {
         <h3 className="entry-title">{entry.title}</h3>
         <div className="entry-meta">
           {entry.fields?.status && (
-            <span className="entry-status-badge"
-              style={{ color: STATUS_COLORS[entry.fields.status] || '#a89f8f' }}>
+            <span
+              className="entry-status-badge"
+              style={{ color: STATUS_COLORS[entry.fields.status] || "#a89f8f" }}
+            >
               {entry.fields.status}
             </span>
           )}
@@ -54,25 +56,26 @@ export default function EntryCard({ entry, onDeleted }) {
           )}
           {entry.fields?.rating && (
             <span className="entry-rating">
-              {'★'.repeat(entry.fields.rating)}{'☆'.repeat(5 - entry.fields.rating)}
+              {"★".repeat(entry.fields.rating)}
+              {"☆".repeat(5 - entry.fields.rating)}
             </span>
           )}
-          <button className="btn-delete" onClick={handleDelete}>✕</button>
+          <button className="btn-delete" onClick={handleDelete}>
+            ✕
+          </button>
         </div>
       </div>
 
-      {entry.fields?.body && (
-        <p className="entry-body">{entry.fields.body}</p>
-      )}
+      {entry.fields?.body && <p className="entry-body">{entry.fields.body}</p>}
 
-      {entry.notes && (
-        <p className="entry-notes">{entry.notes}</p>
-      )}
+      {entry.notes && <p className="entry-notes">{entry.notes}</p>}
 
       {entry.tags?.length > 0 && (
         <div className="entry-tags">
-          {entry.tags.map(tag => (
-            <span key={tag} className="tag">{tag}</span>
+          {entry.tags.map((tag) => (
+            <span key={tag} className="tag">
+              {tag}
+            </span>
           ))}
         </div>
       )}
@@ -81,6 +84,22 @@ export default function EntryCard({ entry, onDeleted }) {
         <p className="entry-due">
           Due: {new Date(entry.fields.dueDate).toLocaleDateString()}
         </p>
+      )}
+
+      {entry.links?.length > 0 && (
+        <div className="entry-links">
+          {entry.links.map((link, i) => (
+            <a
+              key={i}
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+              className="entry-link"
+            >
+              {link}
+            </a>
+          ))}
+        </div>
       )}
     </div>
   );
