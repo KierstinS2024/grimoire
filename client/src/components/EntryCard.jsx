@@ -1,25 +1,29 @@
-import api from '../api/axios';
+import { useState } from "react";
+import api from "../api/axios";
+import EntryForm from "./EntryForm";
 
 const STATUS_COLORS = {
-  active:        '#a78bfa',
-  completed:     '#34d399',
-  paused:        '#f59e0b',
-  blocked:       '#f87171',
-  'in-progress': '#60a5fa',
-  want:          '#a89f8f',
-  dropped:       '#6b6358',
+  active: "#a78bfa",
+  completed: "#34d399",
+  paused: "#f59e0b",
+  blocked: "#f87171",
+  "in-progress": "#60a5fa",
+  want: "#a89f8f",
+  dropped: "#6b6358",
 };
 
 const MOOD_ICONS = {
-  reflective: '🌙',
-  energized:  '⚡',
-  anxious:    '🌊',
-  peaceful:   '🍃',
-  focused:    '🔥',
-  heavy:      '🪨',
+  reflective: "🌙",
+  energized: "⚡",
+  anxious: "🌊",
+  peaceful: "🍃",
+  focused: "🔥",
+  heavy: "🪨",
 };
 
-export default function EntryCard({ entry, onDeleted }) {
+export default function EntryCard({ entry, chapter, onDeleted, onUpdated }) {
+  const [editing, setEditing] = useState(false);
+
   const handleDelete = async (e) => {
     e.stopPropagation();
     if (!window.confirm(`Delete "${entry.title}"?`)) return;
@@ -27,9 +31,35 @@ export default function EntryCard({ entry, onDeleted }) {
       await api.delete(`/chapters/${entry.chapterId}/entries/${entry._id}`);
       onDeleted(entry._id);
     } catch (err) {
-      console.error('Failed to delete entry', err);
+      console.error("Failed to delete entry", err);
     }
   };
+
+  const handleUpdate = async (formData) => {
+    try {
+      const res = await api.put(
+        `/chapters/${entry.chapterId}/entries/${entry._id}`,
+        formData,
+      );
+      onUpdated(res.data);
+      setEditing(false);
+    } catch (err) {
+      console.error("Failed to update entry", err);
+    }
+  };
+
+  if (editing) {
+    return (
+      <div className="entry-card">
+        <EntryForm
+          chapter={chapter}
+          initialData={entry}
+          onSubmit={handleUpdate}
+          onCancel={() => setEditing(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="entry-card">
@@ -60,6 +90,9 @@ export default function EntryCard({ entry, onDeleted }) {
               {"☆".repeat(5 - entry.fields.rating)}
             </span>
           )}
+          <button className="btn-edit" onClick={() => setEditing(true)}>
+            ✎
+          </button>
           <button className="btn-delete" onClick={handleDelete}>
             ✕
           </button>
@@ -67,9 +100,7 @@ export default function EntryCard({ entry, onDeleted }) {
       </div>
 
       {entry.fields?.body && <p className="entry-body">{entry.fields.body}</p>}
-
       {entry.notes && <p className="entry-notes">{entry.notes}</p>}
-
       {entry.tags?.length > 0 && (
         <div className="entry-tags">
           {entry.tags.map((tag) => (
@@ -79,13 +110,11 @@ export default function EntryCard({ entry, onDeleted }) {
           ))}
         </div>
       )}
-
       {entry.fields?.dueDate && (
         <p className="entry-due">
           Due: {new Date(entry.fields.dueDate).toLocaleDateString()}
         </p>
       )}
-
       {entry.links?.length > 0 && (
         <div className="entry-links">
           {entry.links.map((link, i) => (
