@@ -31,6 +31,12 @@ export default function Dashboard() {
     setChapters(prev => prev.filter(c => c._id !== deletedId));
   };
 
+  const handleChapterUpdated = (updatedChapter) => {
+    setChapters((prev) =>
+      prev.map((c) => (c._id === updatedChapter._id ? updatedChapter : c)),
+    );
+  };
+
   return (
     <div className="page">
       <Navbar />
@@ -50,11 +56,12 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="chapter-grid">
-            {chapters.map(chapter => (
+            {chapters.map((chapter) => (
               <ChapterCard
                 key={chapter._id}
                 chapter={chapter}
                 onDeleted={handleChapterDeleted}
+                onUpdated={handleChapterUpdated}
               />
             ))}
           </div>

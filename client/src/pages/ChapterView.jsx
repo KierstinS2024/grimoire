@@ -50,6 +50,12 @@ export default function ChapterView() {
     setEntries((prev) => prev.filter((e) => e._id !== deletedId));
   };
 
+  const handleEntryUpdated = (updatedEntry) => {
+    setEntries((prev) =>
+      prev.map((e) => (e._id === updatedEntry._id ? updatedEntry : e)),
+    );
+  };
+
   if (loading) return (
     <div className="page">
       <Navbar />
@@ -103,7 +109,9 @@ export default function ChapterView() {
               <EntryCard
                 key={entry._id}
                 entry={entry}
+                chapter={chapter}
                 onDeleted={handleEntryDeleted}
+                onUpdated={handleEntryUpdated}
               />
             ))}
           </div>

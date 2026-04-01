@@ -258,6 +258,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.25rem;
+  align-items: start;
 }
 
 .chapter-card {
@@ -712,4 +713,27 @@ body {
 
 .entry-link:hover {
   text-decoration: underline;
+} 
+
+/* Edit button */
+.btn-edit {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1;
+  padding: 0.25rem;
+  transition: color 0.2s;
+  border-radius: var(--radius-sm);
+}
+
+.btn-edit:hover {
+  color: var(--accent);
+} 
+/* Chapter edit form */
+.chapter-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
