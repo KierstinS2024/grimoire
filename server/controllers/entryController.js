@@ -65,5 +65,27 @@ const deleteEntry = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+const searchByTag = async (req, res) => {
+  try {
+    const { tag } = req.query;
+    if (!tag) return res.json([]);
 
-module.exports = { getEntries, createEntry, updateEntry, deleteEntry };
+    const entries = await Entry.find({
+      userId: req.user.id,
+      tags: { $regex: tag, $options: "i" },
+    })
+      .populate("chapterId", "name icon color type")
+      .sort({ createdAt: -1 });
+
+    res.json(entries);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+module.exports = {
+  getEntries,
+  createEntry,
+  updateEntry,
+  deleteEntry,
+  searchByTag,
+};

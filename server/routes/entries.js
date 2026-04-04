@@ -6,10 +6,12 @@ const {
   createEntry,
   updateEntry,
   deleteEntry,
+  searchByTag,
 } = require("../controllers/entryController");
 
 router.use(verifyToken);
 
+router.get("/search", searchByTag);
 router.get("/", getEntries);
 router.post("/", createEntry);
 router.put("/:id", updateEntry);

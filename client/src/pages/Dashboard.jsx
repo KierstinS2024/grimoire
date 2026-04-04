@@ -3,6 +3,7 @@ import api from '../api/axios';
 import Navbar from '../components/Navbar';
 import ChapterCard from '../components/ChapterCard';
 import CreateChapterModal from '../components/CreateChapterModal';
+import TagSearch from "../components/TagSearch";
 
 export default function Dashboard() {
   const [chapters, setChapters] = useState([]);
@@ -47,6 +48,7 @@ export default function Dashboard() {
             + New Chapter
           </button>
         </div>
+        <TagSearch />
         {loading ? (
           <p className="loading-text">Opening your grimoire...</p>
         ) : chapters.length === 0 ? (
