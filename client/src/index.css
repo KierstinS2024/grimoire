@@ -144,6 +144,9 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-left: max(2rem, env(safe-area-inset-left));
+  padding-right: max(2rem, env(safe-area-inset-right));
   border-bottom: 1px solid var(--border);
   background: var(--bg-secondary);
 }
@@ -196,6 +199,8 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .dashboard-title {
