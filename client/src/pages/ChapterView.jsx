@@ -11,8 +11,9 @@ export default function ChapterView() {
   const [chapter, setChapter] = useState(null);
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState('');
+  const [sortBy, setSortBy] = useState("createdAt");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,6 +99,36 @@ export default function ChapterView() {
           </button>
         )}
 
+        {chapter.type === "tracker" && entries.length > 0 && (
+          <div className="sort-controls">
+            <span className="sort-label">Sort by</span>
+            <button
+              className={`sort-btn ${sortBy === "createdAt" ? "active" : ""}`}
+              onClick={() => setSortBy("createdAt")}
+            >
+              Date added
+            </button>
+            <button
+              className={`sort-btn ${sortBy === "priority" ? "active" : ""}`}
+              onClick={() => setSortBy("priority")}
+            >
+              Priority
+            </button>
+            <button
+              className={`sort-btn ${sortBy === "status" ? "active" : ""}`}
+              onClick={() => setSortBy("status")}
+            >
+              Status
+            </button>
+            <button
+              className={`sort-btn ${sortBy === "dueDate" ? "active" : ""}`}
+              onClick={() => setSortBy("dueDate")}
+            >
+              Due date
+            </button>
+          </div>
+        )}
+
         {entries.length === 0 && !showForm ? (
           <div className="empty-state">
             <p>No entries yet.</p>
@@ -105,15 +136,48 @@ export default function ChapterView() {
           </div>
         ) : (
           <div className="entry-list">
-            {entries.map((entry) => (
-              <EntryCard
-                key={entry._id}
-                entry={entry}
-                chapter={chapter}
-                onDeleted={handleEntryDeleted}
-                onUpdated={handleEntryUpdated}
-              />
-            ))}
+            {[...entries]
+              .sort((a, b) => {
+                if (sortBy === "priority") {
+                  const order = { high: 0, medium: 1, low: 2, "": 3 };
+                  return (
+                    (order[a.fields?.priority || ""] ?? 3) -
+                    (order[b.fields?.priority || ""] ?? 3)
+                  );
+                }
+                if (sortBy === "status") {
+                  const order = {
+                    active: 0,
+                    paused: 1,
+                    blocked: 2,
+                    completed: 3,
+                    "": 4,
+                  };
+                  return (
+                    (order[a.fields?.status || ""] ?? 4) -
+                    (order[b.fields?.status || ""] ?? 4)
+                  );
+                }
+                if (sortBy === "dueDate") {
+                  const aDate = a.fields?.dueDate
+                    ? new Date(a.fields.dueDate)
+                    : new Date("9999");
+                  const bDate = b.fields?.dueDate
+                    ? new Date(b.fields.dueDate)
+                    : new Date("9999");
+                  return aDate - bDate;
+                }
+                return new Date(b.createdAt) - new Date(a.createdAt);
+              })
+              .map((entry) => (
+                <EntryCard
+                  key={entry._id}
+                  entry={entry}
+                  chapter={chapter}
+                  onDeleted={handleEntryDeleted}
+                  onUpdated={handleEntryUpdated}
+                />
+              ))}
           </div>
         )}
       </main>
