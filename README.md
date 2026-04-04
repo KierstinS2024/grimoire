@@ -32,14 +32,18 @@ A full-stack personal organization app that lets users create flexible "chapters
 ## Features
 
 - JWT authentication — register, login, logout, protected routes
-- Create, edit, and delete Chapters with custom name, color, and icon
+- Create, edit, and delete Chapters with custom name, color, and emoji icon
 - Four chapter types with type-aware entry fields:
   - **Tracker** — status, priority, due date (job hunt, habits, goals)
   - **List** — status, rating (books, shows, movies, recipes)
   - **Journal** — rich body, mood (writing, dreams, ideas)
   - **Reference** — body, links (important info to store)
 - Full entry CRUD — create, edit, delete entries within each chapter
+- Tracker entries sortable by priority, status, and due date
+- Global tag search — search entries across all chapters by tag
 - Tags and links on every entry
+- Loading states on auth forms
+- Mobile responsive with iOS safe area support
 - Dark, elegant aesthetic with EB Garamond + Inter typography
 
 ---
@@ -47,21 +51,19 @@ A full-stack personal organization app that lets users create flexible "chapters
 ## Architecture
 
 The core technical challenge is the flexible entry system. A single `Entry` model uses a `Mixed` fields object as a discriminated pattern — each entry type populates it differently without requiring separate collections or a massively sparse schema.
-```
 grimoire/
 ├── client/                  # React + Vite frontend
 │   └── src/
 │       ├── api/             # Axios instance with auth interceptor
 │       ├── context/         # AuthContext — JWT state management
-│       ├── components/      # ChapterCard, EntryCard, EntryForm, Navbar
-│       └── pages/           # Login, Register, Dashboard, ChapterView
+│       ├── components/      # ChapterCard, EntryCard, EntryForm, Navbar, TagSearch
+│       └── pages/           # Login, Register, Dashboard, ChapterView, Landing
 │
 └── server/                  # Express backend
-    ├── controllers/         # authController, chapterController, entryController
-    ├── middleware/          # verifyToken — JWT verification
-    ├── models/              # User, Chapter, Entry (Mixed fields pattern)
-    └── routes/              # auth, chapters, entries
-```
+├── controllers/         # authController, chapterController, entryController
+├── middleware/          # verifyToken — JWT verification
+├── models/              # User, Chapter, Entry (Mixed fields pattern)
+└── routes/              # auth, chapters, entries
 
 ---
 
@@ -89,6 +91,7 @@ grimoire/
 | POST | /api/chapters/:chapterId/entries | Create entry | Yes |
 | PUT | /api/chapters/:chapterId/entries/:id | Update entry | Yes |
 | DELETE | /api/chapters/:chapterId/entries/:id | Delete entry | Yes |
+| GET | /api/entries/search?tag= | Search entries by tag | Yes |
 
 ---
 
@@ -105,12 +108,10 @@ npm install
 ```
 
 Create `server/.env`:
-```
 PORT=5000
 MONGO_URI=your_mongodb_atlas_connection_string
 JWT_SECRET=your_jwt_secret
 CLIENT_URL=http://localhost:5173
-```
 ```bash
 npm run dev
 ```
@@ -131,6 +132,9 @@ Four entry types with different fields could be modeled as four separate collect
 
 **Why React + Vite instead of Next.js?**
 Grimoire is a single-page application with client-side routing and no SEO requirements. Vite provides fast dev tooling without the framework opinions of Next.js, keeping the architecture simple and fully within my control.
+
+**Why a cron job instead of a paid tier?**
+Render's free tier spins down after inactivity. Rather than upgrading, a scheduled ping every 10 minutes keeps the backend warm at no cost — appropriate for a portfolio project.
 
 ---
 
