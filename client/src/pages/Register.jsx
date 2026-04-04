@@ -10,6 +10,7 @@ export default function Register() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -20,12 +21,15 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       const res = await api.post("/auth/register", formData);
       login(res.data.token, res.data.user);
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,7 +62,9 @@ export default function Register() {
           required
         />
         {error && <p className="auth-error">{error}</p>}
-        <button type="submit">Create Account</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <span className="spinner" /> : "Create Account"}
+        </button>
         <p className="auth-link">
           Already have an account? <Link to="/login">Sign in</Link>
         </p>

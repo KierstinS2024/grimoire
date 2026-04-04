@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -16,12 +17,15 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       const res = await api.post("/auth/login", formData);
       login(res.data.token, res.data.user);
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,7 +51,9 @@ export default function Login() {
           required
         />
         {error && <p className="auth-error">{error}</p>}
-        <button type="submit">Sign In</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <span className="spinner" /> : "Sign In"}
+        </button>
         <p className="auth-link">
           No account yet? <Link to="/register">Create one</Link>
         </p>
